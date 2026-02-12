@@ -1,0 +1,87 @@
+import React from 'react';
+import {
+    DndContext,
+    useSensor,
+    useSensors,
+    PointerSensor,
+    KeyboardSensor,
+    rectIntersection,
+} from '@dnd-kit/core';
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {CheckCircle2} from "lucide-react";
+import {SortableTaskCard} from "@/components/task/sortable-task-card";
+import {Card} from "@/components/ui/card";
+import { Task } from "@prisma/client";
+type Props = {
+  tasks: Task[];
+  isReorderMode: boolean;
+  onDragEnd: any;
+  onDragStart: any;
+  onStatusChange: (taskId: string, checked: boolean) => void;
+  onEdit: (task: Task) => void;
+  onDelete: (taskId: string, taskTitle: string) => void;
+}
+export function TaskList({
+                             tasks,
+                             isReorderMode,
+                             onDragEnd,
+                             onDragStart,
+                             onStatusChange,
+                             onEdit,
+                             onDelete
+                         }:Props) {
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 3,
+            },
+        }),
+        useSensor(KeyboardSensor)
+    );
+
+    return (
+        <div className="space-y-4">
+            {tasks.length === 0 ? (
+                <Card className="border-border/50 rounded-lg border p-6">
+                    <div className="flex flex-col items-center justify-center py-16">
+                        <div className="mb-4 h-12 w-12 text-muted-foreground">
+                            <CheckCircle2 className="h-12 w-12"/>
+                        </div>
+                        <h3 className="mb-2 text-lg font-semibold text-foreground">No tasks found</h3>
+                        <p className="mb-6 max-w-sm text-center text-muted-foreground">
+                            Try adjusting your search or filter criteria.
+                        </p>
+                    </div>
+                </Card>
+            ) : (
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={rectIntersection}
+                    onDragStart={onDragStart}
+                    onDragEnd={onDragEnd}
+                >
+                    <SortableContext
+                        items={tasks.map(task => task.id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        <div className="space-y-4">
+                            {tasks.map((task) => (
+                                <SortableTaskCard
+                                    key={task.id}
+                                    task={task}
+                                    isReorderMode={isReorderMode}
+                                    onStatusChange={onStatusChange}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                />
+                            ))}
+                        </div>
+                    </SortableContext>
+                </DndContext>
+            )}
+        </div>
+    );
+}
