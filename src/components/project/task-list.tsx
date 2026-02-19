@@ -40,7 +40,7 @@ export function TaskList({
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Tasks</CardTitle>
-          <CardDescription>Manage and track project tasks</CardDescription>
+          <CardDescription>Manage your tasks in a list</CardDescription>
         </div>
         <Button onClick={onCreateTask}>
           <Plus className="mr-2 h-4 w-4" />

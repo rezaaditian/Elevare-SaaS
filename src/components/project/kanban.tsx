@@ -61,7 +61,7 @@ const Kanban = ({ tasks, users, onTaskUpdate,onCreateTask }: KanbanProps) => {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Tasks</CardTitle>
-          <CardDescription>Manage and track project tasks</CardDescription>
+          <CardDescription>Manage your tasks in a kanban board</CardDescription>
         </div>
         <Button onClick={onCreateTask}>
           <Plus className="mr-2 h-4 w-4" />
